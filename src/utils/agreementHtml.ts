@@ -12,8 +12,11 @@ export type TextDirection = "rtl" | "ltr";
 const DIRECTIONAL_BLOCKS =
   "p, h1, h2, h3, h4, h5, h6, ul, ol, li, blockquote, table, th, td, dt, dd, figcaption";
 
-/** Template variables, as the markdown-html renderer marks them. */
-const VARIABLE = "span.variable";
+/**
+ * Template variables and formula results, as the markdown-html renderer marks
+ * them. Both are values dropped into a sentence, not its own words.
+ */
+const VARIABLE = "span.variable, span.formula";
 
 /** Letters of right-to-left scripts. */
 const RTL_LETTER = /[\p{Script=Arabic}\p{Script=Hebrew}\p{Script=Syriac}\p{Script=Thaana}\p{Script=Nko}]/u;

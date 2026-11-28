@@ -12,7 +12,9 @@ export const AGREEMENT_PDF_FILE = "agreement.pdf";
 export const inlineRtlListMarkers = (page: HTMLElement) => {
   page.querySelectorAll<HTMLElement>('ul[dir="rtl"], ol[dir="rtl"]').forEach((list) => {
     const ordered = list.tagName === "OL";
-    const start = ordered ? Number(list.getAttribute("start") ?? 1) || 1 : 1;
+    // A list may start at 0 ("0. ..."), so fall back to 1 only when start is missing or not a number.
+    const startAttr = Number(list.getAttribute("start") ?? 1);
+    const start = ordered && Number.isFinite(startAttr) ? startAttr : 1;
     list.style.listStyle = "none";
     list.style.paddingLeft = "0";
     list.style.paddingRight = "1.5em";

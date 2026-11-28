@@ -19,6 +19,15 @@ describe('prepareAgreementHtml', () => {
     expect(root.querySelector('p')).toHaveAttribute('dir', 'rtl');
   });
 
+  it('reads a sentence that starts with a formula result in the direction of its own words', () => {
+    const formula = (value: string) => `<span class="formula" name="fee">${value}</span>`;
+    const root = prepare(`<p>${formula('USD 650')} هي الرسوم الشهرية.</p><p>${formula('٦٥٠ دولار')} is the monthly fee.</p>`);
+    const [arabic, english] = Array.from(root.querySelectorAll('p'));
+    expect(arabic).toHaveAttribute('dir', 'rtl');
+    expect(english).toHaveAttribute('dir', 'ltr');
+    expect(root.querySelector('span.formula')).toHaveAttribute('dir', 'auto');
+  });
+
   it('isolates each variable so its own punctuation stays in place', () => {
     const root = prepare(`<p>العميل هو ${variable('clientName', 'Northwind Logistics Ltd.')}</p>`);
     expect(root.querySelector('span.variable')).toHaveAttribute('dir', 'auto');

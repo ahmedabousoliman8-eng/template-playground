@@ -179,6 +179,19 @@ describe('PreviewPane', () => {
     expect(page.querySelector('ul .nd-pdf-list-marker')).toBeNull();
   });
 
+  it('numbers a right-to-left list that starts at 0 from 0 in the PDF', async () => {
+    useAppStore.setState({
+      agreementHtml: '<p>x</p>',
+      agreementRevision: 0,
+      renderAgreement: vi.fn().mockResolvedValue('<ol start="0"><li>البند صفر</li><li>البند واحد</li></ol>'),
+    });
+    renderPane();
+    fireEvent.click(pdfButton());
+    await waitFor(() => expect(html2pdf.chain.save).toHaveBeenCalledTimes(1));
+    const page = (html2pdf.chain.from.mock.calls as unknown[][])[0][0] as HTMLElement;
+    expect(Array.from(page.querySelectorAll('ol li')).map((li) => li.textContent)).toEqual(['0. البند صفر', '1. البند واحد']);
+  });
+
   it('saves no PDF when the current sources do not render', async () => {
     const showError = vi.spyOn(message, 'error');
     useAppStore.setState({ agreementHtml: '<p>Stale terms</p>', agreementRevision: 0, renderAgreement: vi.fn().mockRejectedValue(new Error('bad data')) });
